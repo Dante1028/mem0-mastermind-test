@@ -1,0 +1,433 @@
+(base) (.venv) PS E:\study\CAPSTONE\mem0\mastermind> python run_full_game.py --model_type mem0_3step --model gpt-4o-mini --num_runs 1 --code_length 4 --num_colors 6
+E:\study\CAPSTONE\mem0\.venv\Lib\site-packages\transformers\utils\hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+[mem0] ✅ Using Qdrant via collection_name='mem0' (dims=1536)
+[Game #0] Attempts:   0%|                                                                                                                                                   | 0/12 [00:00<?, ?attempt/s] 
+🎯 本局目标答案（secret_code）: ['green', 'pink', 'black', 'red']
+
+
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-81ed6021)
+[mem0.search] query="Your goal is to guess the secret color code like in the game of Mastermind. The game is defined as follows:\n- The code consists out of 4 colors , and duplicates are allowed.\n- Th
+e following colors are allowed: ['pink', 'purple', 'green', 'black', 'orange', 'red'].\n- You have a total of 12 guesses.\n- After each guess, you will receive feedback based on the following rules:1. 
+You will be told how many pegs are the correct color **and** in the correct position.\n2. You will be told how many pegs are the correct color **but** in the wrong position.\n- A color in the guess wil
+l only be counted once, prioritizing exact matches before partial ones.\n- Use the feedback from all your guesses to logically deduce the secret code.\n- Once you are ready to make a guess, let me know
+ what code is your guess by prepending 'FINAL GUESS:' to it.### Example interaction:\n<User> What's your next guess?\n<Assistant> FINAL GUESS:['red', 'orange', 'pink', 'black']\n<User> Feedback: <number> color(s) in the correct position(s). <number> color(s) but wrong position(s). What's your next guess?\n###\n\nWhat's your next guess?"
+[mem0.search] raw_result: {'results': []}
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': '51ed2b25-d6f8-4a11-8da5-3b22ce507b81', 'memory': "[Mastermind Memory] guess=['pink', 'purple', 'green', 'black']", 'event': 'ADD', 'actor_id': NNone, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+USER: Your goal is to guess the secret color code like in the game of Mastermind. The game is defined as follows:
+- The code consists out of 4 colors , and duplicates are allowed.
+- The following colors are allowed: ['pink', 'purple', 'green', 'black', 'orange', 'red'].
+- You have a total of 12 guesses.
+- After each guess, you will receive feedback based on the following rules:1. You will be told how many pegs are the correct color **and** in the correct position.
+2. You will be told how many pegs are the correct color **but** in the wrong position.
+- A color in the guess will only be counted once, prioritizing exact matches before partial ones.
+- Use the feedback from all your guesses to logically deduce the secret code.
+- Once you are ready to make a guess, let me know what code is your guess by prepending 'FINAL GUESS:' to it.### Example interaction:
+<User> What's your next guess?
+<Assistant> FINAL GUESS:['red', 'orange', 'pink', 'black']
+<User> Feedback: <number> color(s) in the correct position(s). <number> color(s) but wrong position(s). What's your next guess?
+###
+
+What's your next guess?
+
+=== 🤖 模型输出 ===
+Let's start with an initial guess to gather some information about the secret color code.
+
+My first guess is:
+
+FINAL GUESS: ['pink', 'purple', 'green', 'black']
+
+[Round 1] 模型猜测: ['pink', 'purple', 'green', 'black']
+[Round 1] 正确答案: ['green', 'pink', 'black', 'red']
+⚫ Black (exact matches): 0
+⚪ White (partial matches): 3
+[Game #0] Attempts:   8%|███████████▌                                                                                                                               | 1/12 [00:04<00:51,  4.71s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-81ed6021)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['pink', 'purple', 'green', 'black']; black=0, white=3"
+[mem0.search] raw_result: {'results': [{'id': '51ed2b25-d6f8-4a11-8da5-3b22ce507b81', 'memory': "[Mastermind Memory] guess=['pink', 'purple', 'green', 'black']", 'hash': '899c37bab61666c4c006ac15b8d4e9
+39', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8521094, 'created_at': '2025-10-15T16:29:39.770258-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['pink', 'purple', 'green', 'black']
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': 'c379bf01-d93e-4bd6-9bf6-f7ab7c43b285', 'memory': "[Mastermind Memory] guess=['pink', 'green', 'purple', 'orange'] black=0 white=3", 'event': 'ADDD', 'actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: Let's start with an initial guess to gather some information about the secret color code.
+
+My first guess is:
+
+FINAL GUESS: ['pink', 'purple', 'green', 'black']
+USER: Feedback: Correct color and position: 0. Correct color but wrong position: 3.
+(⚫ Black: 0, ⚪ White: 3)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+Based on the feedback, we know that none of the colors are in the correct position, but three of them are correct colors in the wrong positions. Since 'pink', 'purple', 'green', and 'black' were used in the first guess, we can deduce that 'pink', 'purple', and 'green' are the correct colors, while 'black' is not part of the code.
+
+Now, let's try a new combination using 'pink', 'purple', and 'green' in different positions along with a new color. I will introduce 'orange' as the new color.
+
+My next guess is:
+
+FINAL GUESS: ['pink', 'green', 'purple', 'orange']
+
+[Round 2] 模型猜测: ['pink', 'green', 'purple', 'orange']
+[Round 2] 正确答案: ['green', 'pink', 'black', 'red']
+⚫ Black (exact matches): 0
+⚪ White (partial matches): 2
+[Game #0] Attempts:  17%|███████████████████████▏                                                                                                                   | 2/12 [00:09<00:47,  4.80s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-81ed6021)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['pink', 'green', 'purple', 'orange']; black=0, white=2"
+[mem0.search] raw_result: {'results': [{'id': 'c379bf01-d93e-4bd6-9bf6-f7ab7c43b285', 'memory': "[Mastermind Memory] guess=['pink', 'green', 'purple', 'orange'] black=0 white=3", 'hash': '0de792a186b55
+5b7ba0b2473c56ac0c4', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.88503623, 'created_at': '2025-10-15T16:29:44.621320-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_i
+d': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': '51ed2b25-d6f8-4a11-8da5-3b22ce507b81', 'memory': "[Mastermind Memory] guess=['pink', 'purple', 'green', 'black']", 'hash'
+: '899c37bab61666c4c006ac15b8d4e939', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8492681, 'created_at': '2025-10-15T16:29:39.770258-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['pink', 'green', 'purple', 'orange'] black=0 white=3
+[2] [Mastermind Memory] guess=['pink', 'purple', 'green', 'black']
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': 'b3d880ec-1875-4f1c-9063-9485e3e4051e', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 white=2", 'event': 'ADD',, 'actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: Based on the feedback, we know that none of the colors are in the correct position, but three of them are correct colors in the wrong positions. Since 'pink', 'purple', 'green', and 'black' were used in the first guess, we can deduce that 'pink', 'purple', and 'green' are the correct colors, while 'black' is not part of the code.
+
+Now, let's try a new combination using 'pink', 'purple', and 'green' in different positions along with a new color. I will introduce 'orange' as the new color.
+
+My next guess is:
+
+FINAL GUESS: ['pink', 'green', 'purple', 'orange']
+USER: Feedback: Correct color and position: 0. Correct color but wrong position: 2.
+(⚫ Black: 0, ⚪ White: 2)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+From the feedback, we know that 'pink', 'green', and 'purple' are still part of the code, but none of them are in the correct position. Additionally, we have two colors that are correct but in the wrong positions. Since 'orange' was not part of the previous feedback, we can conclude that it is not in the code.
+
+Now, let's try a new combination of 'pink', 'green', and 'purple' while changing their positions and introducing 'red' as a new color.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'red', 'purple']
+
+[Round 3] 模型猜测: ['green', 'pink', 'red', 'purple']
+[Round 3] 正确答案: ['green', 'pink', 'black', 'red']
+⚫ Black (exact matches): 2
+⚪ White (partial matches): 1
+[Game #0] Attempts:  25%|██████████████████████████████████▊                                                                                                        | 3/12 [00:16<00:53,  5.97s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-81ed6021)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['green', 'pink', 'red', 'purple']; black=2, white=1"
+[mem0.search] raw_result: {'results': [{'id': 'b3d880ec-1875-4f1c-9063-9485e3e4051e', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 white=2", 'hash': '61d0c93f7081e577
+c59c6e605d05883a', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.88597184, 'created_at': '2025-10-15T16:29:51.981863-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id':
+ 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': 'c379bf01-d93e-4bd6-9bf6-f7ab7c43b285', 'memory': "[Mastermind Memory] guess=['pink', 'green', 'purple', 'orange'] black=0 wh
+ite=3", 'hash': '0de792a186b555b7ba0b2473c56ac0c4', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8766323, 'created_at': '2025-10-15T16:29:44.621320-07:00', 'updated_at': None, 'use
+r_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': '51ed2b25-d6f8-4a11-8da5-3b22ce507b81', 'memory': "[Mastermind Memory] guess=['pink', 'purple
+', 'green', 'black']", 'hash': '899c37bab61666c4c006ac15b8d4e939', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8472786, 'created_at': '2025-10-15T16:29:39.770258-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 white=2
+[2] [Mastermind Memory] guess=['pink', 'green', 'purple', 'orange'] black=0 white=3
+[3] [Mastermind Memory] guess=['pink', 'purple', 'green', 'black']
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': '1bef1191-f01f-461e-b207-4daae6e636b0', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'orange', 'purple'] black=2 white=1", 'event': 'ADDD', 'actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: From the feedback, we know that 'pink', 'green', and 'purple' are still part of the code, but none of them are in the correct position. Additionally, we have two colors that are correct but in the wrong positions. Since 'orange' was not part of the previous feedback, we can conclude that it is not in the code.
+
+Now, let's try a new combination of 'pink', 'green', and 'purple' while changing their positions and introducing 'red' as a new color.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'red', 'purple']
+USER: Feedback: Correct color and position: 2. Correct color but wrong position: 1.
+(⚫ Black: 2, ⚪ White: 1)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+From the feedback, we know that:
+- 2 colors are correct and in the correct position.
+- 1 color is correct but in the wrong position.
+
+Since 'green', 'pink', and 'purple' were used in the last guess, and we know that 'red' is not part of the code, we can deduce that two of 'green', 'pink', and 'purple' are in the correct positions.   
+
+Let's analyze the previous guesses:
+1. In the guess ['pink', 'purple', 'green', 'black'], we had 0 correct in position but 3 correct colors.
+2. In the guess ['pink', 'green', 'purple', 'orange'], we had 0 correct in position but 2 correct colors.
+
+Given that 'green' and 'pink' were in the last guess and yielded 2 correct positions, let's try keeping 'green' and 'pink' in the same positions and change 'purple' to a new color, 'orange'.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'orange', 'purple']
+
+[Round 4] 模型猜测: ['green', 'pink', 'orange', 'purple']
+[Round 4] 正确答案: ['green', 'pink', 'black', 'red']
+⚫ Black (exact matches): 2
+⚪ White (partial matches): 0
+[Game #0] Attempts:  33%|██████████████████████████████████████████████▎                                                                                            | 4/12 [00:24<00:52,  6.52s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-81ed6021)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['green', 'pink', 'orange', 'purple']; black=2, white=0"
+[mem0.search] raw_result: {'results': [{'id': '1bef1191-f01f-461e-b207-4daae6e636b0', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'orange', 'purple'] black=2 white=1", 'hash': 'fec20416bbf68
+294fbf5c9c1085bea44', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8830515, 'created_at': '2025-10-15T16:29:59.344982-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id
+': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': 'b3d880ec-1875-4f1c-9063-9485e3e4051e', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 whi
+te=2", 'hash': '61d0c93f7081e577c59c6e605d05883a', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8823365, 'created_at': '2025-10-15T16:29:51.981863-07:00', 'updated_at': None, 'user
+_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': 'c379bf01-d93e-4bd6-9bf6-f7ab7c43b285', 'memory': "[Mastermind Memory] guess=['pink', 'green',
+ 'purple', 'orange'] black=0 white=3", 'hash': '0de792a186b555b7ba0b2473c56ac0c4', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8819417, 'created_at': '2025-10-15T16:29:44.621320-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['green', 'pink', 'orange', 'purple'] black=2 white=1
+[2] [Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 white=2
+[3] [Mastermind Memory] guess=['pink', 'green', 'purple', 'orange'] black=0 white=3
+[mem0.add] ✅ infer=True 对话写入: {'results': [{'id': 'a3b5584c-8d4f-4051-a9c3-397019e0f965', 'memory': 'Feedback: Correct color and position: 2', 'event': 'ADD'}, {'id': '947656a9-cba4-403f-b95c-251bb
+bd2281bc', 'memory': 'Correct color but wrong position: 0', 'event': 'ADD'}, {'id': 'eb0a0c5b-030c-4a9f-84cb-cecf8498229d', 'memory': "Next guess is ['green', 'pink', 'red', 'black']", 'event': 'ADD'}]}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': '5a819aba-1148-4c30-85a5-18b1aeb62723', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'red', 'black'] black=2 white=0", 'event': 'ADD',  'actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: From the feedback, we know that:
+- 2 colors are correct and in the correct position.
+- 1 color is correct but in the wrong position.
+
+Since 'green', 'pink', and 'purple' were used in the last guess, and we know that 'red' is not part of the code, we can deduce that two of 'green', 'pink', and 'purple' are in the correct positions.   
+
+Let's analyze the previous guesses:
+1. In the guess ['pink', 'purple', 'green', 'black'], we had 0 correct in position but 3 correct colors.
+2. In the guess ['pink', 'green', 'purple', 'orange'], we had 0 correct in position but 2 correct colors.
+
+Given that 'green' and 'pink' were in the last guess and yielded 2 correct positions, let's try keeping 'green' and 'pink' in the same positions and change 'purple' to a new color, 'orange'.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'orange', 'purple']
+USER: Feedback: Correct color and position: 2. Correct color but wrong position: 0.
+(⚫ Black: 2, ⚪ White: 0)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+From the feedback, we know that:
+- 2 colors are correct and in the correct position.
+- 0 colors are correct but in the wrong position.
+
+Since 'green' and 'pink' are in the same positions as the previous guess and still yield 2 correct positions, we can conclude that 'green' and 'pink' are indeed the first two colors in the code.       
+
+Now, we need to determine the last two colors. Since 'purple' was in the last guess and did not contribute to any correct colors, we can eliminate it. The only remaining colors we haven't tried in the last two positions are 'black' and 'red'.
+
+Let's try 'red' and 'black' in the last two positions.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'red', 'black']
+
+[Round 5] 模型猜测: ['green', 'pink', 'red', 'black']
+[Round 5] 正确答案: ['green', 'pink', 'black', 'red']
+⚫ Black (exact matches): 2
+⚪ White (partial matches): 2
+[Game #0] Attempts:  42%|█████████████████████████████████████████████████████████▉                                                                                 | 5/12 [00:38<01:04,  9.22s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-81ed6021)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['green', 'pink', 'red', 'black']; black=2, white=2"
+[mem0.search] raw_result: {'results': [{'id': '5a819aba-1148-4c30-85a5-18b1aeb62723', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'red', 'black'] black=2 white=0", 'hash': '1f841d36130ff2e3d
+52b40a89a3f768d', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.88265467, 'created_at': '2025-10-15T16:30:13.371482-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 
+'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': 'b3d880ec-1875-4f1c-9063-9485e3e4051e', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 white=
+2", 'hash': '61d0c93f7081e577c59c6e605d05883a', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.87431884, 'created_at': '2025-10-15T16:29:51.981863-07:00', 'updated_at': None, 'user_i
+d': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}, {'id': '1bef1191-f01f-461e-b207-4daae6e636b0', 'memory': "[Mastermind Memory] guess=['green', 'pink', '
+orange', 'purple'] black=2 white=1", 'hash': 'fec20416bbf68294fbf5c9c1085bea44', 'metadata': {'game': 'game-81ed6021', 'type': 'fact'}, 'score': 0.8693668, 'created_at': '2025-10-15T16:29:59.344982-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-81ed6021', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['green', 'pink', 'red', 'black'] black=2 white=0
+[2] [Mastermind Memory] guess=['green', 'pink', 'red', 'purple'] black=0 white=2
+[3] [Mastermind Memory] guess=['green', 'pink', 'orange', 'purple'] black=2 white=1
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': 'b0fd2780-301d-47a6-b65e-57b1092cf8fc', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'black', 'red'] black=2 white=2", 'event': 'ADD',  'actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: From the feedback, we know that:
+- 2 colors are correct and in the correct position.
+- 0 colors are correct but in the wrong position.
+
+Since 'green' and 'pink' are in the same positions as the previous guess and still yield 2 correct positions, we can conclude that 'green' and 'pink' are indeed the first two colors in the code.       
+
+Now, we need to determine the last two colors. Since 'purple' was in the last guess and did not contribute to any correct colors, we can eliminate it. The only remaining colors we haven't tried in the last two positions are 'black' and 'red'.
+
+Let's try 'red' and 'black' in the last two positions.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'red', 'black']
+USER: Feedback: Correct color and position: 2. Correct color but wrong position: 2.
+(⚫ Black: 2, ⚪ White: 2)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+From the feedback, we know that:
+- 2 colors are correct and in the correct position (which we know are 'green' and 'pink').
+- 2 colors are correct but in the wrong position.
+
+Since 'red' and 'black' are the two colors that are correct but in the wrong position, we need to find a new arrangement for them while keeping 'green' and 'pink' in their correct positions.
+
+Let's try switching 'red' and 'black' to the last two positions.
+
+My next guess is:
+
+FINAL GUESS: ['green', 'pink', 'black', 'red']
+
+[Round 6] 模型猜测: ['green', 'pink', 'black', 'red']
+[Round 6] 正确答案: ['green', 'pink', 'black', 'red']
+⚫ Black (exact matches): 4
+⚪ White (partial matches): 0
+[Game #0] Game Solved:  50%|████████████████████████████████████████████████████████████████████                                                                    | 6/12 [00:43<00:43,  7.27s/attempt] 
+=== Summary ===
+Model:            Mem0 + OpenAI (3-step enhanced): gpt-4o-mini
+Code Length:      4
+Number of Colors: 6
+Last Code:        brown, pink, yellow, green
+Max Guesses:      12
+Games Played:     1
+Games Won:        1
+(base) (.venv) PS E:\study\CAPSTONE\mem0\mastermind> python run_full_game.py --model_type mem0_3step --model gpt-4o-mini --num_runs 1 --code_length 4 --num_colors 6
+E:\study\CAPSTONE\mem0\.venv\Lib\site-packages\transformers\utils\hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+[mem0] ✅ Using Qdrant via collection_name='mem0' (dims=1536)
+[Game #0] Attempts:   0%|                                                                                                                                                   | 0/12 [00:00<?, ?attempt/s]
+🎯 本局目标答案（secret_code）: ['pink', 'blue', 'red', 'green']
+
+
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-52af5223)
+[mem0.search] query="Your goal is to guess the secret color code like in the game of Mastermind. The game is defined as follows:\n- The code consists out of 4 colors , and duplicates are allowed.\n- The following colors are allowed: ['blue', 'brown', 'red', 'green', 'pink', 'white'].\n- You have a total of 12 guesses.\n- After each guess, you will receive feedback based on the following rules:1. You will be told how many pegs are the correct color **and** in the correct position.\n2. You will be told how many pegs are the correct color **but** in the wrong position.\n- A color in the guess will only be counted once, prioritizing exact matches before partial ones.\n- Use the feedback from all your guesses to logically deduce the secret code.\n- Once you are ready to make a guess, let me know what code is your guess by prepending 'FINAL GUESS:' to it.### Example interaction:\n<User> What's your next guess?\n<Assistant> FINAL GUESS:['red', 'green', 'blue', 'pink']\n<User> Feedback: <number> color(s) in the correct position(s). <number> color(s) but wrong position(s). What's your next guess?\n###\n\nWhat's your next guess?"
+[mem0.search] raw_result: {'results': []}
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': 'e8779c81-3a3f-4908-9764-15d3b047c886', 'memory': "[Mastermind Memory] guess=['blue', 'red', 'green', 'pink']", 'event': 'ADD', 'actor_id': None, e': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+USER: Your goal is to guess the secret color code like in the game of Mastermind. The game is defined as follows:
+- The code consists out of 4 colors , and duplicates are allowed.
+- The following colors are allowed: ['blue', 'brown', 'red', 'green', 'pink', 'white'].
+- You have a total of 12 guesses.
+- After each guess, you will receive feedback based on the following rules:1. You will be told how many pegs are the correct color **and** in the correct position.
+2. You will be told how many pegs are the correct color **but** in the wrong position.
+- A color in the guess will only be counted once, prioritizing exact matches before partial ones.
+- Use the feedback from all your guesses to logically deduce the secret code.
+- Once you are ready to make a guess, let me know what code is your guess by prepending 'FINAL GUESS:' to it.### Example interaction:
+<User> What's your next guess?
+<Assistant> FINAL GUESS:['red', 'green', 'blue', 'pink']
+<User> Feedback: <number> color(s) in the correct position(s). <number> color(s) but wrong position(s). What's your next guess?
+###
+
+What's your next guess?
+
+=== 🤖 模型输出 ===
+My first guess will be:
+
+FINAL GUESS: ['blue', 'red', 'green', 'pink']
+
+[Round 1] 模型猜测: ['blue', 'red', 'green', 'pink']
+[Round 1] 正确答案: ['pink', 'blue', 'red', 'green']
+⚫ Black (exact matches): 0
+⚪ White (partial matches): 4
+[Game #0] Attempts:   8%|███████████▌                                                                                                                               | 1/12 [00:05<00:58,  5.28s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-52af5223)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['blue', 'red', 'green', 'pink']; black=0, white=4"
+[mem0.search] raw_result: {'results': [{'id': 'e8779c81-3a3f-4908-9764-15d3b047c886', 'memory': "[Mastermind Memory] guess=['blue', 'red', 'green', 'pink']", 'hash': 'c54cb62f31f09943d660c62a60ffdbec',
+ 'metadata': {'game': 'game-52af5223', 'type': 'fact'}, 'score': 0.83615065, 'created_at': '2025-10-15T16:34:36.800746-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-52af5223', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['blue', 'red', 'green', 'pink']
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': 'be57ca12-8ad2-4a5c-b2d5-d4c05acc61c5', 'memory': "[Mastermind Memory] guess=['red', 'green', 'pink', 'blue'] black=0 white=4", 'event': 'ADD', ''actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: My first guess will be:
+
+FINAL GUESS: ['blue', 'red', 'green', 'pink']
+USER: Feedback: Correct color and position: 0. Correct color but wrong position: 4.
+(⚫ Black: 0, ⚪ White: 4)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+Based on the feedback, we know that none of the colors are in the correct position, but all four colors are correct. Therefore, I will try a new arrangement of these colors.
+
+My next guess will be:
+
+FINAL GUESS: ['red', 'green', 'pink', 'blue']
+
+[Round 2] 模型猜测: ['red', 'green', 'pink', 'blue']
+[Round 2] 正确答案: ['pink', 'blue', 'red', 'green']
+⚫ Black (exact matches): 0
+⚪ White (partial matches): 4
+[Game #0] Attempts:  17%|███████████████████████▏                                                                                                                   | 2/12 [00:08<00:38,  3.87s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-52af5223)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['red', 'green', 'pink', 'blue']; black=0, white=4"
+[mem0.search] raw_result: {'results': [{'id': 'be57ca12-8ad2-4a5c-b2d5-d4c05acc61c5', 'memory': "[Mastermind Memory] guess=['red', 'green', 'pink', 'blue'] black=0 white=4", 'hash': '8cedb95ce6afb5c221
+c1ae43cd96105c', 'metadata': {'game': 'game-52af5223', 'type': 'fact'}, 'score': 0.88789093, 'created_at': '2025-10-15T16:34:39.689915-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': '
+mastermind-assistant', 'run_id': 'game-52af5223', 'role': 'user'}, {'id': 'e8779c81-3a3f-4908-9764-15d3b047c886', 'memory': "[Mastermind Memory] guess=['blue', 'red', 'green', 'pink']", 'hash': 'c54cb6
+2f31f09943d660c62a60ffdbec', 'metadata': {'game': 'game-52af5223', 'type': 'fact'}, 'score': 0.83305156, 'created_at': '2025-10-15T16:34:36.800746-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-52af5223', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['red', 'green', 'pink', 'blue'] black=0 white=4
+[2] [Mastermind Memory] guess=['blue', 'red', 'green', 'pink']
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': '8d27f9af-f27e-46d3-81c8-a70da86fe33a', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'blue', 'red'] black=0 white=4", 'event': 'ADD', ''actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: Based on the feedback, we know that none of the colors are in the correct position, but all four colors are correct. Therefore, I will try a new arrangement of these colors.
+
+My next guess will be:
+
+FINAL GUESS: ['red', 'green', 'pink', 'blue']
+USER: Feedback: Correct color and position: 0. Correct color but wrong position: 4.
+(⚫ Black: 0, ⚪ White: 4)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+Since the colors are the same as the previous guess and still resulted in 0 correct positions but 4 correct colors, I will try a different arrangement of the same colors.
+
+My next guess will be:
+
+FINAL GUESS: ['green', 'pink', 'blue', 'red']
+
+[Round 3] 模型猜测: ['green', 'pink', 'blue', 'red']
+[Round 3] 正确答案: ['pink', 'blue', 'red', 'green']
+⚫ Black (exact matches): 0
+⚪ White (partial matches): 4
+[Game #0] Attempts:  25%|██████████████████████████████████▊                                                                                                        | 3/12 [00:12<00:36,  4.04s/attempt] 
+[mem0.search] scope=(mm_user_01, mastermind-assistant, game-52af5223)
+[mem0.search] query="[Mastermind] next_guess_required; last_guess=['green', 'pink', 'blue', 'red']; black=0, white=4"
+[mem0.search] raw_result: {'results': [{'id': '8d27f9af-f27e-46d3-81c8-a70da86fe33a', 'memory': "[Mastermind Memory] guess=['green', 'pink', 'blue', 'red'] black=0 white=4", 'hash': '4ab337ee2b4d61f399
+b9166b8a4b7ad4', 'metadata': {'game': 'game-52af5223', 'type': 'fact'}, 'score': 0.88816476, 'created_at': '2025-10-15T16:34:43.937924-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': '
+mastermind-assistant', 'run_id': 'game-52af5223', 'role': 'user'}, {'id': 'be57ca12-8ad2-4a5c-b2d5-d4c05acc61c5', 'memory': "[Mastermind Memory] guess=['red', 'green', 'pink', 'blue'] black=0 white=4",
+ 'hash': '8cedb95ce6afb5c221c1ae43cd96105c', 'metadata': {'game': 'game-52af5223', 'type': 'fact'}, 'score': 0.8826543, 'created_at': '2025-10-15T16:34:39.689915-07:00', 'updated_at': None, 'user_id': 
+'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-52af5223', 'role': 'user'}, {'id': 'e8779c81-3a3f-4908-9764-15d3b047c886', 'memory': "[Mastermind Memory] guess=['blue', 'red', 'green'
+, 'pink']", 'hash': 'c54cb62f31f09943d660c62a60ffdbec', 'metadata': {'game': 'game-52af5223', 'type': 'fact'}, 'score': 0.832872, 'created_at': '2025-10-15T16:34:36.800746-07:00', 'updated_at': None, 'user_id': 'mm_user_01', 'agent_id': 'mastermind-assistant', 'run_id': 'game-52af5223', 'role': 'user'}]}
+[mem0.inject] ✅ memories injected into GPT:
+[1] [Mastermind Memory] guess=['green', 'pink', 'blue', 'red'] black=0 white=4
+[2] [Mastermind Memory] guess=['red', 'green', 'pink', 'blue'] black=0 white=4
+[3] [Mastermind Memory] guess=['blue', 'red', 'green', 'pink']
+[mem0.add] ✅ infer=True 对话写入: {'results': []}
+[mem0.add] ✅ infer=False 事实写入: {'results': [{'id': 'c6f81770-86a9-48c3-bc64-7b9f024bdea9', 'memory': "[Mastermind Memory] guess=['pink', 'blue', 'red', 'green'] black=0 white=4", 'event': 'ADD', ''actor_id': None, 'role': 'user'}]}
+
+=== 🔍 模型输入 (最近3条) ===
+ASSISTANT: Since the colors are the same as the previous guess and still resulted in 0 correct positions but 4 correct colors, I will try a different arrangement of the same colors.
+
+My next guess will be:
+
+FINAL GUESS: ['green', 'pink', 'blue', 'red']
+USER: Feedback: Correct color and position: 0. Correct color but wrong position: 4.
+(⚫ Black: 0, ⚪ White: 4)
+What's your next guess?
+
+=== 🤖 模型输出 ===
+Since all three guesses have resulted in 0 correct positions but 4 correct colors, it confirms that the colors are indeed 'blue', 'red', 'green', and 'pink', but we need to find a new arrangement.     
+
+I will try a different combination of these colors.
+
+My next guess will be:
+
+FINAL GUESS: ['pink', 'blue', 'red', 'green']
+
+[Round 4] 模型猜测: ['pink', 'blue', 'red', 'green']
+[Round 4] 正确答案: ['pink', 'blue', 'red', 'green']
+⚫ Black (exact matches): 4
+⚪ White (partial matches): 0
+[Game #0] Game Solved:  33%|█████████████████████████████████████████████▎                                                                                          | 4/12 [00:17<00:34,  4.34s/attempt] 
+=== Summary ===
+Model:            Mem0 + OpenAI (3-step enhanced): gpt-4o-mini
+Code Length:      4
+Number of Colors: 6
+Last Code:        yellow, red, orange, purple
+Max Guesses:      12
+Games Played:     1
+Games Won:        1

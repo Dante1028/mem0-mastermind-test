@@ -1,0 +1,73 @@
+import json
+import msvcrt  # Windows: 避免解释器退出时 portalocker 解锁导入失败的析构期噪声
+
+from argparse import ArgumentParser
+
+from mastermind.evaluator import Evaluator
+from mastermind.game import Mastermind
+from mastermind.models import AnthropicModel, HFModel, OpenAIModel
+from mastermind.solvers import KnuthSolver
+from mastermind.utils import print_summary
+from mastermind.mem0_three_step_model import Mem0ThreeStepModel
+from mastermind.mem0_openai_model import Mem0OpenAIModel, Mem0Config
+
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--model", type=str, default="gpt2", help="Model name.")
+    parser.add_argument("--model_type", type=str, default="hf", help="Model type.")
+    parser.add_argument("--generation_args", type=str, default={}, help="Generation kwargs.")
+    parser.add_argument("--use_cot", action="store_true", help="Use COT.")
+    parser.add_argument("--use_full_example", action="store_true", help="Use full example.")
+    parser.add_argument("--code_length", type=int, default=4, help="Code length of the game.")
+    parser.add_argument("--num_colors", type=int, default=6, help="Number of colors in the game.")
+    parser.add_argument("--num_runs", type=int, default=1, help="Number of runs.")
+    parser.add_argument("--save_results", action="store_true", help="Save results.")
+    parser.add_argument("--save_path", type=str, default=None, help="Path to save results.")
+    args = parser.parse_args()
+
+    if args.generation_args:
+        generation_args = json.loads(args.generation_args)  # Convert JSON string to a dictionary
+    else:
+        generation_args = None
+
+    game = Mastermind(code_length=args.code_length, num_colors=args.num_colors)
+
+    if args.model_type == "hf":
+        model = HFModel(model_name=args.model, generation_args=generation_args)
+    elif args.model_type == "openai":
+        model = OpenAIModel(model_name=args.model, generation_args=generation_args)
+    elif args.model_type == "anthropic":
+        model = AnthropicModel(model_name=args.model, generation_args=generation_args)
+    elif args.model_type == "knuth":
+        model = KnuthSolver(game)
+    elif args.model_type == "mem0_3step":
+        model = Mem0ThreeStepModel(
+            model_name=args.model,
+            user_id="mm_user_01",  # 保持一致，这样 search 能命中刚 add 的记忆
+            # openai_api_key="sk-xxxx",   # 可选；不传则用环境变量 OPENAI_API_KEY
+        )
+    elif args.model_type == "mem0_openai":
+        cfg = Mem0Config(
+            # 你希望“只搜不写”的话，改成 False
+            qdrant_url="http://localhost:6333",
+            collection="mem0_mastermind",
+            chat_model=args.model,  # 比如 gpt-4o-mini
+            temperature=0.2,
+            max_tokens=512,
+            # 可按需固定 run_id，或者就用默认的随机
+            # run_id="game-session-001",
+        )
+        model = Mem0OpenAIModel(cfg)
+
+    evaluator = Evaluator(game, model, use_cot=args.use_cot, use_fewshot_example=args.use_full_example)
+    result = evaluator.run(
+        num_games=args.num_runs, save_results=args.save_results, save_path=args.save_path, compute_progress=True
+    )
+    print_summary(model, game, result, args.num_runs)
+
+    try:
+        shutdown = getattr(model, "shutdown", None)
+        if callable(shutdown):
+            shutdown()
+    except Exception:
+        pass
