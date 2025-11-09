@@ -49,7 +49,7 @@ if __name__ == "__main__":
            
             qdrant_url="http://localhost:6333",
             collection="mem0_mastermind",
-            chat_model=args.model,  # 比如 gpt-4o-mini
+            chat_model=args.model,  
             temperature=0.2,
             max_tokens=512,
             
