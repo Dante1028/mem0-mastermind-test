@@ -1,7 +1,5 @@
 import json
-import msvcrt  # Windows: 避免解释器退出时 portalocker 解锁导入失败的析构期噪声
-
-from argparse import ArgumentParser
+import msvcrt  
 
 from mastermind.evaluator import Evaluator
 from mastermind.game import Mastermind
@@ -43,18 +41,18 @@ if __name__ == "__main__":
     elif args.model_type == "mem0_3step":
         model = Mem0ThreeStepModel(
             model_name=args.model,
-            user_id="mm_user_01",  # 保持一致，这样 search 能命中刚 add 的记忆
-            # openai_api_key="sk-xxxx",   # 可选；不传则用环境变量 OPENAI_API_KEY
+            user_id="mm_user_01",  
+            # openai_api_key="sk-xxxx",  
         )
     elif args.model_type == "mem0_openai":
         cfg = Mem0Config(
-            # 你希望“只搜不写”的话，改成 False
+           
             qdrant_url="http://localhost:6333",
             collection="mem0_mastermind",
             chat_model=args.model,  # 比如 gpt-4o-mini
             temperature=0.2,
             max_tokens=512,
-            # 可按需固定 run_id，或者就用默认的随机
+            
             # run_id="game-session-001",
         )
         model = Mem0OpenAIModel(cfg)
