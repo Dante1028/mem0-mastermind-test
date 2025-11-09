@@ -14,7 +14,7 @@ try:
 except Exception:
     pass
 
-import requests  # 用于直接访问 Qdrant REST API
+import requests  
 from openai import OpenAI
 from mem0 import Memory
 from mastermind.models import LanguageModel
@@ -43,13 +43,8 @@ class Mem0ThreeStepModel(LanguageModel):
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.debug_print_search = debug_print_search
-
-        # 去重：已写入的 (guess, hint) 对
         self._seen_pairs: set[Tuple[Optional[Tuple[str, ...]], Optional[str]]] = set()
-
-        # 动态解析 allowed colors
         self.allowed_colors: Optional[List[str]] = None
-        # 首轮输入是否已写
         self._seed_written: bool = False
 
         # OpenAI
@@ -59,13 +54,13 @@ class Mem0ThreeStepModel(LanguageModel):
         )
         self.openai = OpenAI(api_key=self.OPENAI_API_KEY)
 
-        # Qdrant 基本信息
+        # Qdrant
         self.qdrant_url = qdrant_url.rstrip("/")
         self.collection_name = base_collection_name
         self.embedding_dims = 1536
         self.distance = "Cosine"
 
-        # === 启动即自动确保集合就绪（不存在则创建；不匹配则新建一个干净集合名） ===
+      
         self.collection_name = self._ensure_collection(
             url=self.qdrant_url,
             collection_name=self.collection_name,
@@ -73,7 +68,7 @@ class Mem0ThreeStepModel(LanguageModel):
             expect_distance=self.distance,
         )
 
-        # === Mem0 配置 ===
+        # === Mem0  ===
         config = {
             "vector_store": {
                 "provider": "qdrant",
@@ -87,7 +82,7 @@ class Mem0ThreeStepModel(LanguageModel):
                 "provider": "openai",
                 "config": {
                     "api_key": self.OPENAI_API_KEY,
-                    "model": "text-embedding-3-small",  # 1536 维
+                    "model": "text-embedding-3-small",  
                 },
             },
             "llm": {
@@ -101,7 +96,7 @@ class Mem0ThreeStepModel(LanguageModel):
         self.memory = Memory.from_config(config)
         print(f"[mem0] Using Qdrant at {self.qdrant_url}, collection='{self.collection_name}' (dims={self.embedding_dims}, distance={self.distance})")
 
-        # 退出时优雅关闭底层 client（若存在）
+        # 
         try:
             client = getattr(self.memory, "client", None) or getattr(self.memory, "_client", None)
             if client and hasattr(client, "close"):
@@ -109,23 +104,16 @@ class Mem0ThreeStepModel(LanguageModel):
         except Exception:
             pass
 
-    # ---------- 自动确保集合存在且 schema 正确 ----------
+    # 
     def _ensure_collection(self, url: str, collection_name: str, expect_dims: int, expect_distance: str) -> str:
-        """
-        1) 检查集合是否存在：
-           - 不存在：直接创建
-           - 存在：校验 vectors.size & distance
-                - 匹配：使用现有集合
-                - 不匹配：自动生成新集合名并创建（避免复用旧坏段）
-        2) 返回最终可用的集合名
-        """
+        
         def _get(path: str):
             return requests.get(f"{url}{path}", timeout=5)
 
         def _put(path: str, json: Dict):
             return requests.put(f"{url}{path}", json=json, timeout=10)
 
-        # 0) 等 ready（容器刚起时稍等片刻）
+       
         try:
             r = _get("/readyz")
             if r.status_code != 200:
@@ -133,20 +121,20 @@ class Mem0ThreeStepModel(LanguageModel):
         except Exception:
             time.sleep(0.8)
 
-        # 1) 读取集合配置
+      
         try:
             resp = _get(f"/collections/{collection_name}")
             if resp.status_code == 200:
                 data = resp.json().get("result", {})
                 vectors = (((data.get("config") or {}).get("params") or {}).get("vectors") or {})
-                # vectors 既可能是 dict，也可能是多向量 map；这里只处理单向量的 dict 形态
+               
                 size = vectors.get("size")
                 dist = vectors.get("distance")
                 if size == expect_dims and str(dist).lower() == expect_distance.lower():
                     print(f"[mem0] ℹ️ collection '{collection_name}' exists and matches schema ({size}, {dist}).")
                     return collection_name
                 else:
-                    # 不匹配：创建一个新集合名，避免和旧段混用
+                    
                     new_name = f"{collection_name}_{time.strftime('%Y%m%d_%H%M%S')}"
                     print(f"[mem0] collection '{collection_name}' schema mismatch (got: size={size}, distance={dist}; expect: {expect_dims},{expect_distance}).")
                     print(f"[mem0] ➜ Will create a new clean collection: '{new_name}'")
@@ -156,14 +144,13 @@ class Mem0ThreeStepModel(LanguageModel):
                     print(f"[mem0] created collection '{new_name}'")
                     return new_name
             elif resp.status_code == 404:
-                # 不存在则创建
+                
                 create_body = {"vectors": {"size": expect_dims, "distance": expect_distance}}
                 resp2 = _put(f"/collections/{collection_name}", json=create_body)
                 resp2.raise_for_status()
                 print(f"[mem0] created collection '{collection_name}'")
                 return collection_name
             else:
-                # 其它返回码：保守起见也创建一个新名
                 new_name = f"{collection_name}_{time.strftime('%Y%m%d_%H%M%S')}"
                 create_body = {"vectors": {"size": expect_dims, "distance": expect_distance}}
                 resp2 = _put(f"/collections/{new_name}", json=create_body)
@@ -171,7 +158,6 @@ class Mem0ThreeStepModel(LanguageModel):
                 print(f"[mem0] created collection '{new_name}' (fallback, prev status={resp.status_code})")
                 return new_name
         except Exception as e:
-            # 网络/权限等异常：再试一次以新名创建
             new_name = f"{collection_name}_{time.strftime('%Y%m%d_%H%M%S')}"
             try:
                 create_body = {"vectors": {"size": expect_dims, "distance": expect_distance}}
@@ -182,7 +168,6 @@ class Mem0ThreeStepModel(LanguageModel):
             except Exception as e2:
                 raise RuntimeError(f"[mem0] failed to ensure collection: {e}; then {e2}")
 
-    # ---------- 工具函数 ----------
     @staticmethod
     def _extract_last_text(chat_history: ChatHistory) -> Dict[str, str]:
         last_user_text, last_assistant_text = "", ""
@@ -226,7 +211,7 @@ class Mem0ThreeStepModel(LanguageModel):
         cols = [c.lower() for c in cols if c.strip()]
         return cols or None
 
-    # ---------- 写库“安全阀” ----------
+
     def _embedding_ok(self, text: str) -> bool:
         try:
             if not text or not text.strip():
@@ -260,7 +245,6 @@ class Mem0ThreeStepModel(LanguageModel):
             print(f"[mem0.add] error (safe-add): {e}")
             return None
 
-    # ---------- 主流程 ----------
     def __call__(self, chat_history: ChatHistory) -> ChatHistory:
         texts = self._extract_last_text(chat_history)
         last_user_text = texts["user"]
@@ -274,7 +258,6 @@ class Mem0ThreeStepModel(LanguageModel):
         prev_hint = self._extract_hint(last_user_text)
         prev_guess = self._extract_guess(last_assistant_text)
 
-        # 首轮规则 seed（安全阀保护）
         if not self._seed_written:
             has_rule = bool(self._extract_allowed_colors(last_user_text)) or ("Mastermind" in (last_user_text or ""))
             if has_rule and last_user_text:
@@ -287,7 +270,6 @@ class Mem0ThreeStepModel(LanguageModel):
                     print(f"[mem0.add] seed(fact,infer=False,fallback) saved: {res_seed2 if res_seed2 else {'results': []}}")
                 self._seed_written = True
 
-        # 写入上一轮的结构化 fact（去重 + 安全阀）
         pair_key = (tuple(prev_guess) if prev_guess else None, prev_hint if prev_hint else None)
         if prev_hint or prev_guess:
             if pair_key not in self._seen_pairs:
@@ -304,7 +286,6 @@ class Mem0ThreeStepModel(LanguageModel):
                 res_prev = self._safe_add(fact_text, metadata=meta, infer=False)
                 print(f"[mem0.add] fact(prev) saved: {res_prev if res_prev else {'results': []}}")
 
-        # ——检索（发生在生成之前）——
         if prev_guess or prev_hint:
             query = f"Mastermind memory for next guess | prev_guess={prev_guess} | feedback={prev_hint}"
         else:
@@ -334,7 +315,6 @@ class Mem0ThreeStepModel(LanguageModel):
             for i, h in enumerate(hits[: self.recall_k], 1):
                 print(f"  [{i}] {h}")
 
-        # 构造 prompts
         messages: ChatHistory = []
         allowed_str = "[" + ",".join(f"'{c}'" for c in self.allowed_colors) + "]"
         base_rules = (
