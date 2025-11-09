@@ -108,14 +108,13 @@ class Evaluator:
         for num_game in range(num_games):
             chat_history: ChatHistory = self._init_chat_history()
             guess_history: GuessHistory = []
-            progress_history: ProgressHistory = []  # ✅ FIX-1: 初始化，避免未定义
-
+            progress_history: ProgressHistory = []  
             total_guesses_bar = tqdm(
                 total=self.game.max_guesses, desc=f"{YELLOW}[Game #{num_game}]{RESET} Attempts", unit="attempt"
             )
 
-            # ✅ 开局打印本局目标答案（调试）
-            print(f"\n🎯 本局目标答案（secret_code）: {self.game.secret_code}\n")
+            
+            print(f"\n answer（secret_code）: {self.game.secret_code}\n")
 
             try:
                 while self.state == GameState.ONGOING:
@@ -154,13 +153,13 @@ class Evaluator:
                     "model": self.model.get_model_info(),
                 }
 
-                results.append(result)  # ✅ FIX-2: 追加当前局结果，供外部汇总
+                results.append(result) 
 
                 if save_results:
                     if save_path is None:
                         save_path = make_output_path()
 
-                    # 保持老版行为（不显式设置编码/ensure_ascii），避免行为差异
+                  
                     with open(save_path / "results.jsonl", "a") as f:
                         f.write(json.dumps(result) + "\n")
 
